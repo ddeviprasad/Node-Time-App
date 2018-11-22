@@ -41,6 +41,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/googleTime', (req, res) => {
+    console.log('req: ', req);
     const { dteFor, chargeCode } = req.body;
     let data = getMapping(dteFor, chargeCode);
     TimeSheet.find({week: data.week}).then((times) => {
