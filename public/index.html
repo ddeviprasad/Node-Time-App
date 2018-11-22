@@ -1,0 +1,51 @@
+<!DOCTYPE <!DOCTYPE html>
+<html ng-app="userManagementApp">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="./resource/style.css" />
+    <script src="./resource/angular.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular.min.js"></script> -->
+</head>
+<body>
+    <div class="wrapper">
+        <h1>Dashboard</h1>
+        <div class="section" ng-controller="dashboardController as dte">
+            <h2>Time</h2>
+            <ul class="time-container">
+                <li ng-repeat="time in dte.times" ng-click="dte.updateTime(time)" class="times">{{time.week}}</li>
+            </ul>
+            <button ng-click="dte.addTime()" class="btn">Add New Time</button>
+            <table ng-if="dte.isNewTimeSheet">
+                <thead>
+                    <tr>
+                        <th class="head">
+                            Tasks
+                        </th>
+                        <th class="head" ng-repeat="slot in dte.timeSlots">
+                            {{slot}}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="chargeCode in dte.newTime.chargeCodes">
+                        <td>
+                            <input type="text" class="charge-code" ng-model="chargeCode.code" />
+                        </td>
+                        <td ng-repeat="hour in chargeCode.hours track by $index">
+                            <input type="number" class="hours" ng-model="hour.value">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="action-container" ng-if="dte.isNewTimeSheet">
+                <button ng-click="dte.addChargeCode()" class="btn">Add Charge Code</button>
+                <button ng-click="dte.saveTime()" class="btn btn-save">Save</button>
+            </div>
+        </div>
+    </div>
+    <script src="./resource/app.js"></script>
+</body>
+</html>
