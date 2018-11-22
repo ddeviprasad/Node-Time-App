@@ -1,6 +1,6 @@
 function getWeekKey(date) {
     let newDate = new Date(date);
-    newDate.setDate(newDate.getDate + 6 - newDate.getDay);
+    newDate.setDate(newDate.getDate() + 6 - newDate.getDay());
     return newDate.toDateString();
 }
 
