@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 // To host static files
 app.use(express.static(__dirname +'/../public'));
 
-function saveTimeDetails(timeData) {
+function saveTimeDetails(timeData, res) {
     const time = new TimeSheet(timeData);
     time.save().then((doc) => {
         res.send(doc);
@@ -41,15 +41,15 @@ app.get('/', (req, res) => {
 });
 
 app.post('/googleTime', (req, res) => {
-    console.log('req: ', req);
-    const { dteFor, chargeCode } = req.body;
-    let data = getMapping(dteFor, chargeCode);
+    console.log('req: ', req.body.queryResult.parameters);
+    const { type, chargecode, hours } = req.body.queryResult.parameters;
+    let data = getMapping(type, chargecode, hours);
     TimeSheet.find({week: data.week}).then((times) => {
         console.log('times: ', times);
         if(times && times.length) {
             updateTimeDetails(times[0]._id, data.week, data.chargeCodes);
         } else {
-            saveTimeDetails(data);
+            saveTimeDetails(data, res);
         }
     }, (err) => {
         res.status(400).send(err);
