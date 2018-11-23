@@ -4,69 +4,111 @@ function getWeekKey(date) {
     return newDate.toDateString();
 }
 
-function fillTime() {
-
+function fillTimeForDay(chargeCode, hours, day) {
+    let newTime = {
+        code: chargeCode,
+        hours: [
+            {value: 0},
+            {value: 0},
+            {value: 0},
+            {value: 0},
+            {value: 0},
+            {value: 0},
+            {value: 0}
+        ]
+    };
+    newTime.hours[day].value = hours;
+    return newTime;
 }
 
-// function fillHoures() {
-//     let code = {
-//         code: '',
-//         hours: [
-//             {value: 0},
-//             {value: 0},
-//             {value: 0},
-//             {value: 0},
-//             {value: 0},
-//             {value: 0},
-//             {value: 0}
-//         ]
-//     };
-// }
-
-function fillTimeForWeek(chargeCode, key) {
+function fillTimeForWeek(chargeCode, hours) {
     let newTime = {
-        week: key,
-        chargeCodes: [
-            {
-                code: chargeCode,
-                hours: [
-                    {value: 0},
-                    {value: 9},
-                    {value: 9},
-                    {value: 9},
-                    {value: 9},
-                    {value: 9},
-                    {value: 9}
-                ]
-            }
+        code: chargeCode,
+        hours: [
+            {value: 0},
+            {value: hours},
+            {value: hours},
+            {value: hours},
+            {value: hours},
+            {value: hours},
+            {value: 0}
         ]
     };
     return newTime;
 }
 
-function getMapping(dteFor, chargeCode) {
-    switch(dteFor) {
-        case 'today':
-            // TODO
-            break;
+function addNewTime(weekMap, chargecode, hours) {
+    const { isWeekly, key, day } = weekMap;
+    let newTime = {
+        week: key,
+        chargeCodes: []
+    };
+    let timeSet;
+    if (isWeekly) {
+        timeSet = fillTimeForWeek(chargecode, hours);
+    } else {
+        timeSet = fillTimeForDay(chargecode, hours, day);
+    }
+    newTime.chargeCodes.push(timeSet);
+    return newTime;
+}
+
+function updateExistingTime(data, weekMap, chargecode, hours) {
+    const { chargeCodes } = data;
+    const { isWeekly, day } = weekMap;
+    for(let i = chargeCodes.length; i >= 0; i--) {
+        if (chargeCodes[i] === chargecode) {
+            if (isWeekly) {
+                data.chargeCodes[i] = fillTimeForWeek(chargecode, hours);
+            } else {
+                data.chargeCodes[i].hours[day] = hours;
+            }
+            return data;
+        }
+    }
+    let newTime;
+    if(isWeekly) {
+        newTime = fillTimeForWeek(chargecode, hours);
+    } else {
+        newTime = fillTimeForDay(chargecode, hours, day)
+    }
+    data.chargeCodes.push(newTime);
+    return data;
+}
+
+function getWeekMap(type) {
+    let date = new Date();
+    let weekly = false;
+    switch(type) {
         case 'yesterday':
-            // TODO
+            date.setDate(date.getDate() - 1);
             break;
-        case 'tommorow':
-            // TODO
+        case 'tomorrow':
+            date.setDate(date.getDate() + 1);
             break;
-        case 'last week':
-            // TODO
+        case 'today':
+            weekly = false;
+            break;
+        case 'lastweek':
+            date.setDate(date.getDate() - 7);
+            weekly = true;
             break;
         default:
-            let key = getWeekKey(new Date());
-            return fillTimeForWeek(chargeCode, key);
+            date = new Date();
+            weekly = true;
     }
+    return {
+        key: getWeekKey(date),
+        isWeekly: weekly,
+        day: date.getDay()
+    };
 }
 
 module.exports = {
+    getWeekMap,
     getWeekKey,
-    fillTime,
-    getMapping
+    addNewTime,
+    fillTimeForWeek,
+    updateExistingTime
 }
 

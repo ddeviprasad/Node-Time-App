@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { mongoose } = require('./db/mangoose');
 const { TimeSheet } = require('./model/timeSheet');
-const { getMapping } = require('./utils/dteFillType');
+const { getWeekMap, addNewTime, updateExistingTime } = require('./utils/dteFillType');
 const PORT = process.env.PORT || 8080;
 
 const app = express();
@@ -41,15 +41,17 @@ app.get('/', (req, res) => {
 });
 
 app.post('/googleTime', (req, res) => {
-    console.log('req: ', req.body.queryResult.parameters);
+    // console.log('req: ', req.body.queryResult.parameters);
     const { type, chargecode, hours } = req.body.queryResult.parameters;
-    let data = getMapping(type, chargecode, hours);
-    TimeSheet.find({week: data.week}).then((times) => {
+    let weekMap = getWeekMap(type);
+    TimeSheet.find({week: weekMap.key}).then((times) => {
         console.log('times: ', times);
         if(times && times.length) {
-            updateTimeDetails(times[0]._id, data.week, data.chargeCodes);
+            let data = updateExistingTime(times[0], weekMap, chargecode, hours);
+            updateTimeDetails(data._id, data.week, data.chargeCodes);
         } else {
-            saveTimeDetails(data, res);
+            let timeData = addNewTime(weekMap, chargecode, hours);
+            saveTimeDetails(timeData, res);
         }
     }, (err) => {
         res.status(400).send(err);
