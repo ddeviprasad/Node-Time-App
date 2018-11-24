@@ -2,6 +2,7 @@ angular.module('userManagementApp', [])
   .controller('dashboardController', ['$http', function($http) {
     let dte = this;
     dte.isNewTimeSheet = false;
+    dte.showText = 'Add';
     function getTimes () {
         $http({
             method: 'GET',
@@ -63,6 +64,8 @@ angular.module('userManagementApp', [])
         };
         dte.newTime.chargeCodes.push(code);
     }
+    this.addTime();
+    this.addChargeCode();
 
     this.updateTimeSheet = function() {
         $http({

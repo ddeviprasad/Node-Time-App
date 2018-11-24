@@ -21,9 +21,10 @@ function saveTimeDetails(timeData, res) {
     })
 }
 
-function updateTimeDetails(id, week, chargeCodes) {
-    TimeSheet.findByIdAndUpdate({
-        _id: id
+function updateTimeDetails(data, res) {
+    const { week, chargeCodes } = data;
+    TimeSheet.findOneAndUpdate({
+        week
         }, {$set: {
             week,
             chargeCodes
@@ -48,7 +49,7 @@ app.post('/googleTime', (req, res) => {
         console.log('times: ', times);
         if(times && times.length) {
             let data = updateExistingTime(times[0], weekMap, chargecode, hours);
-            updateTimeDetails(data._id, data.week, data.chargeCodes);
+            updateTimeDetails(data, res);
         } else {
             let timeData = addNewTime(weekMap, chargecode, hours);
             saveTimeDetails(timeData, res);
@@ -71,12 +72,13 @@ app.post('/addTime', (req, res) => {
         week: req.body.week,
         chargeCodes: req.body.chargeCodes
     };
-    saveTimeDetails(data);
+
+    saveTimeDetails(data, res);
 });
 
 app.patch('/updateTime', (req, res) => {
     const {week, chargeCodes} = req.body;
-    updateTimeDetails(req.body._id, week, chargeCodes);
+    updateTimeDetails(req.body, res);
 });
 
 app.listen(PORT, () => {

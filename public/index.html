@@ -13,12 +13,14 @@
     <div class="wrapper">
         <h1>Dashboard</h1>
         <div class="section" ng-controller="dashboardController as dte">
-            <h2>Time</h2>
+            <h2>Available Time</h2>
+            <p ng-if="dte.times.length === 0" class="text-warning">No existing time</p>
             <ul class="time-container">
                 <li ng-repeat="time in dte.times" ng-click="dte.updateTime(time)" class="times">{{time.week}}</li>
             </ul>
-            <button ng-click="dte.addTime()" class="btn">Add New Time</button>
-            <table ng-if="dte.isNewTimeSheet">
+            <!-- <button ng-click="dte.addTime()" class="btn">Add New Time</button> -->
+            <h2>{{dte.showText}} Time</h2>
+            <table>
                 <thead>
                     <tr>
                         <th class="head">
@@ -40,7 +42,7 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="action-container" ng-if="dte.isNewTimeSheet">
+            <div class="action-container">
                 <button ng-click="dte.addChargeCode()" class="btn">Add Charge Code</button>
                 <button ng-click="dte.saveTime()" class="btn btn-save">Save</button>
             </div>
