@@ -64,7 +64,7 @@ function updateExistingTime(data, weekMap, chargecode, hours) {
                 if (isWeekly) {
                     data.chargeCodes[i] = fillTimeForWeek(chargecode, hours);
                 } else {
-                    data.chargeCodes[i].hours[day] = hours;
+                    data.chargeCodes[i].hours[day] = { value: hours };
                 }
                 return data;
             }
