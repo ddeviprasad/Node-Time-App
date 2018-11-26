@@ -22,6 +22,62 @@ io.on("connection", () => {
   console.log("Client Connected");
 });
 
+let response = {
+  "fulfillmentText": "This is a text response",
+  "fulfillmentMessages": [
+    {
+      "card": {
+        "title": "card title",
+        "subtitle": "card text",
+        "imageUri": "https://assistant.google.com/static/images/molecule/Molecule-Formation-stop.png",
+        "buttons": [
+          {
+            "text": "button text",
+            "postback": "https://assistant.google.com/"
+          }
+        ]
+      }
+    }
+  ],
+  "source": "example.com",
+  "payload": {
+    "google": {
+      "expectUserResponse": true,
+      "richResponse": {
+        "items": [
+          {
+            "simpleResponse": {
+              "textToSpeech": "this is a simple response"
+            }
+          }
+        ]
+      }
+    },
+    "facebook": {
+      "text": "Hello, Facebook!"
+    },
+    "slack": {
+      "text": "This is a text response for Slack."
+    }
+  },
+  "outputContexts": [
+    {
+      "name": "projects/${PROJECT_ID}/agent/sessions/${SESSION_ID}/contexts/context name",
+      "lifespanCount": 5,
+      "parameters": {
+        "param": "param value"
+      }
+    }
+  ],
+  "followupEventInput": {
+    "name": "event name",
+    "languageCode": "en-US",
+    "parameters": {
+      "param": "param value"
+    }
+  }
+};
+
 // Middleware to parse the JSON
 app.use(bodyParser.json());
 
@@ -74,16 +130,16 @@ app.get("/", (req, res) => {
 
 app.post("/googleTime", (req, res) => {
   // console.log('req: ', req.body.queryResult.parameters);
-  const { type, chargecode, hours } = req.body.queryResult.parameters;
+  const { type, chargeCode, hours } = req.body.queryResult.parameters;
   let weekMap = getWeekMap(type);
   TimeSheet.find({ week: weekMap.key }).then(
     times => {
       console.log("times: ", times);
       if (times && times.length) {
-        let data = updateExistingTime(times[0], weekMap, chargecode, hours);
+        let data = updateExistingTime(times[0], weekMap, chargeCode, hours);
         updateTimeDetails(data, res);
       } else {
-        let timeData = addNewTime(weekMap, chargecode, hours);
+        let timeData = addNewTime(weekMap, chargeCode, hours);
         saveTimeDetails(timeData, res);
       }
     },
