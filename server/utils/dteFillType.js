@@ -56,14 +56,16 @@ function addNewTime(weekMap, chargecode, hours) {
 function updateExistingTime(data, weekMap, chargecode, hours) {
     const { chargeCodes } = data;
     const { isWeekly, day } = weekMap;
-    for(let i = chargeCodes.length; i >= 0; i--) {
-        if (chargeCodes[i].chargeCode === chargecode) {
-            if (isWeekly) {
-                data.chargeCodes[i] = fillTimeForWeek(chargecode, hours);
-            } else {
-                data.chargeCodes[i].hours[day] = hours;
+    if(chargeCodes.length) {
+        for(let i = chargeCodes.length; i <= 0; i--) {
+            if (chargeCodes[i].chargeCode === chargecode) {
+                if (isWeekly) {
+                    data.chargeCodes[i] = fillTimeForWeek(chargecode, hours);
+                } else {
+                    data.chargeCodes[i].hours[day] = hours;
+                }
+                return data;
             }
-            return data;
         }
     }
     let newTime;
