@@ -47,7 +47,7 @@ let response = {
         "items": [
           {
             "simpleResponse": {
-              "textToSpeech": "this is a simple response"
+              "textToSpeech": "Time sheet updated successfully"
             }
           }
         ]
@@ -91,7 +91,7 @@ function saveTimeDetails(timeData, res) {
   const time = new TimeSheet(timeData);
   time.save().then(
     doc => {
-      res.send(doc);
+      res.send(response);
       onDbUpdate();
     },
     err => {
@@ -116,7 +116,7 @@ function updateTimeDetails(data, res) {
   ).then(
     doc => {
       onDbUpdate();
-      res.send(doc);
+      res.send(response);
     },
     err => {
       res.status(400).send(err);

@@ -17,6 +17,7 @@ angular.module("userManagementApp", []).controller("dashboardController", [
           console.log("err: ", err);
         }
       );
+      console.log('Connected');
     }
     getTimes();
     function createDateArray(day, date) {
