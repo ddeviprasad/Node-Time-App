@@ -136,10 +136,10 @@ app.post("/googleTime", (req, res) => {
     times => {
       console.log("times: ", times);
       if (times && times.length) {
-        let data = updateExistingTime(times[0], weekMap, chargeCode, hours);
+        let data = updateExistingTime(times[0], weekMap, chargeCode, Number(hours));
         updateTimeDetails(data, res);
       } else {
-        let timeData = addNewTime(weekMap, chargeCode, hours);
+        let timeData = addNewTime(weekMap, chargeCode, Number(hours));
         saveTimeDetails(timeData, res);
       }
     },

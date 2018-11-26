@@ -3,7 +3,6 @@ angular.module("userManagementApp", []).controller("dashboardController", [
   "$http",
   function($http) {
     let dte = this;
-    dte.isNewTimeSheet = false;
     dte.showText = "Add";
     function getTimes() {
       $http({
@@ -12,46 +11,52 @@ angular.module("userManagementApp", []).controller("dashboardController", [
       }).then(
         response => {
           dte.times = response.data.times;
+          if(dte.times.length > 0) {
+            dte.updateTime(dte.times[dte.times.length - 1]);
+          } else {
+            dte.addTime();
+          }
         },
         err => {
           console.log("err: ", err);
         }
       );
-      console.log('Connected');
     }
     getTimes();
-    function createDateArray(day, date) {
-      return [
-        "Sun, " + (date + 6 - day),
-        "Mon, " + (date + 6 - day),
-        "Tue, " + (date + 6 - day),
-        "Wed, " + (date + 6 - day),
-        "Thu, " + (date + 6 - day),
-        "Fri, " + (date + 6 - day),
-        "Sat, " + (date + 6 - day)
-      ];
+    function createDateArray(date) {
+      let today = new Date();
+      let days = ["Sun,","Mon,","Tue,","Wed,","Thu,","Fri,","Sat,"].reverse();
+      let times = [];
+
+      for(let i=6;i>=0;i--){
+        let clonedDate = new Date(date.getTime());
+        let activeDate = new Date(clonedDate.setDate(clonedDate.getDate()-i)).getDate();
+        times.push([days[i],activeDate].join(' '));
+      }
+
+
+      return times
     }
 
     this.addTime = function() {
-      dte.isNewTimeSheet = true;
       var today = new Date();
       var day = today.getDay();
       var date = today.getDate();
-      dte.timeSlots = createDateArray(day, date);
       today.setDate(date + 6 - day);
       let weekEnd = today.toDateString();
+      dte.timeSlots = createDateArray(weekEnd);
       dte.newTime = {
         week: weekEnd,
         chargeCodes: []
       };
+      this.addChargeCode();
     };
 
     this.updateTime = function(time) {
-      dte.isNewTimeSheet = true;
       var currentDate = new Date(time.week);
       var day = currentDate.getDay();
       var date = currentDate.getDate();
-      dte.timeSlots = createDateArray(day, date);
+      dte.timeSlots = createDateArray(currentDate);
       dte.newTime = time;
     };
 
@@ -70,8 +75,8 @@ angular.module("userManagementApp", []).controller("dashboardController", [
       };
       dte.newTime.chargeCodes.push(code);
     };
-    this.addTime();
-    this.addChargeCode();
+    // this.addTime();
+    // this.addChargeCode();
 
     this.updateTimeSheet = function() {
       $http({
@@ -81,7 +86,6 @@ angular.module("userManagementApp", []).controller("dashboardController", [
       }).then(
         response => {
           dte.newTime = response.data;
-          dte.isNewTimeSheet = false;
         },
         err => {
           console.log("err: ", err);
@@ -100,7 +104,6 @@ angular.module("userManagementApp", []).controller("dashboardController", [
         }).then(
           response => {
             console.log(response);
-            dte.isNewTimeSheet = false;
             dte.newTime = response.data;
           },
           err => {
