@@ -55,9 +55,11 @@ function addNewTime(weekMap, chargecode, hours) {
 
 function updateExistingTime(data, weekMap, chargecode, hours) {
     const { chargeCodes } = data;
+    console.log('chargeCodes: ', chargeCodes);
     const { isWeekly, day } = weekMap;
     if(chargeCodes.length) {
-        for(let i = chargeCodes.length; i >= 0; i--) {
+        for(let i = chargeCodes.length - 1; i >= 0; i--) {
+           // console.log(chargeCodes);
             if (chargeCodes[i].code === chargecode) {
                 if (isWeekly) {
                     data.chargeCodes[i] = fillTimeForWeek(chargecode, hours);
