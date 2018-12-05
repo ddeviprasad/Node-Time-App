@@ -42,7 +42,7 @@ let response = {
   "source": "example.com",
   "payload": {
     "google": {
-      "expectUserResponse": true,
+      "expectUserResponse": false,
       "richResponse": {
         "items": [
           {
