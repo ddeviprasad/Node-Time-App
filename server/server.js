@@ -23,57 +23,28 @@ io.on("connection", () => {
 });
 
 let response = {
-  "fulfillmentText": "This is a text response",
-  "fulfillmentMessages": [
+  fulfillmentText: "Time sheet",
+  fulfillmentMessages: [
     {
-      "card": {
-        "title": "card title",
-        "subtitle": "card text",
-        "imageUri": "https://assistant.google.com/static/images/molecule/Molecule-Formation-stop.png",
-        "buttons": [
-          {
-            "text": "button text",
-            "postback": "https://assistant.google.com/"
-          }
-        ]
+      card: {
+        title: "Time sheet",
+        subtitle: "Time sheet updated successfully"
       }
     }
   ],
-  "source": "example.com",
-  "payload": {
-    "google": {
-      "expectUserResponse": false,
-      "richResponse": {
-        "items": [
+  source: "github",
+  payload: {
+    google: {
+      expectUserResponse: false,
+      richResponse: {
+        items: [
           {
-            "simpleResponse": {
-              "textToSpeech": "Time sheet updated successfully"
+            simpleResponse: {
+              textToSpeech: "Time sheet updated successfully"
             }
           }
         ]
       }
-    },
-    "facebook": {
-      "text": "Hello, Facebook!"
-    },
-    "slack": {
-      "text": "This is a text response for Slack."
-    }
-  },
-  "outputContexts": [
-    {
-      "name": "projects/${PROJECT_ID}/agent/sessions/${SESSION_ID}/contexts/context name",
-      "lifespanCount": 5,
-      "parameters": {
-        "param": "param value"
-      }
-    }
-  ],
-  "followupEventInput": {
-    "name": "event name",
-    "languageCode": "en-US",
-    "parameters": {
-      "param": "param value"
     }
   }
 };
